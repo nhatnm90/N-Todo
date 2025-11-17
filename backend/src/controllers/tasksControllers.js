@@ -3,7 +3,6 @@ import Task from '../models/Tasks.js'
 const getAllTasks = async (req, res) => {
   try {
     const { filter = 'all' } = req.query
-    console.log(filter)
     const now = new Date()
     let startDate
 
@@ -24,7 +23,6 @@ const getAllTasks = async (req, res) => {
     }
 
     const query = startDate ? { createdAt: { $gte: startDate } } : {}
-    console.log(startDate)
 
     const result = await Task.aggregate([
       {
