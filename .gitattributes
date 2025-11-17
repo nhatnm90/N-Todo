@@ -1,0 +1,11 @@
+# Thiết lập mặc định: Git sẽ tự động xử lý (auto-detect)
+# Nó sẽ chuyển LF thành CRLF khi checkout trên Windows
+# và chuyển CRLF thành LF khi commit
+* text=auto
+
+# Bạn cũng có thể ép buộc các file text cụ thể luôn dùng LF
+# (Rất hữu ích cho các file .sh, .js, .css, .json, .md)
+# *.js    text eol=lf
+# *.css   text eol=lf
+# *.json  text eol=lf
+# *.md    text eol=lf
