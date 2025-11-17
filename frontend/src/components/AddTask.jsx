@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import api from '@/lib/axios'
 import { handleKeyPress } from '@/lib/utils'
-import axios from 'axios'
 import { Plus } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ const AddTask = ({ setActiveTask }) => {
 
   const addTask = async () => {
     try {
-      const res = await axios.post('http://localhost:2101/api/tasks', {
+      const res = await api.post('/tasks', {
         title: inputTitle
       })
       if (res && res.status === 201) {
