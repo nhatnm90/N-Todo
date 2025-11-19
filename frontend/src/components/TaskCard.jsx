@@ -14,17 +14,19 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import api from '@/lib/axios'
-import { cn, handleKeyPress } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Calendar, CheckCircle2, Circle, SquarePen, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import SwipeItem from '@/components/SwipeItem'
+// import useDeviceDetection from '@/customHooks/useDeviceDetection'
 
 const TaskCard = ({ index, task, setActiveTask }) => {
   const inputTaskRef = useRef(null)
   const [inputTitle, setInputTitle] = useState(task.title)
   const [isEditing, setIsEditing] = useState(false)
   // const [isOpenAlert, setIsOpenAlert] = useState(false)
+  // const { isMobileDevice } = useDeviceDetection()
 
   const updateTask = async (isCompleted = null) => {
     try {
@@ -62,10 +64,10 @@ const TaskCard = ({ index, task, setActiveTask }) => {
   }, [isEditing])
 
   return (
-    <SwipeItem taskId={task._id} onDelete={deleteTask} onEdit={setIsEditing}>
+    <SwipeItem taskId={task._id} onDelete={deleteTask} onEdit={setIsEditing} taskCompletedAt={task.completedAt}>
       <Card
         className={cn(
-          'p-4 bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group',
+          'rounded-none p-4 bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group',
           task.status === 'complete' && 'opacity-75'
         )}
         style={{ animationDelay: `${index * 50}ms` }}
@@ -91,19 +93,27 @@ const TaskCard = ({ index, task, setActiveTask }) => {
           {/* hiển thị và chỉnh sửa */}
           <div className='flex-1 min-w-0'>
             {isEditing ? (
-              <Input
-                value={inputTitle}
-                onChange={(e) => setInputTitle(e.target.value)}
-                placeholder='Wanna update something?'
-                className='flex-1 h-12 text-base border-border/50 focus:border-primary/50 focus:ring-primary/50'
-                type='text'
-                ref={inputTaskRef}
-                onBlur={() => {
-                  setInputTitle(task.title)
-                  setIsEditing(false)
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  updateTask()
                 }}
-                onKeyPress={(e) => handleKeyPress(e, updateTask)}
-              />
+              >
+                <Input
+                  value={inputTitle}
+                  onChange={(e) => setInputTitle(e.target.value)}
+                  placeholder='Wanna update something? Press done for saving'
+                  className='flex-1 h-12 text-base border-border/50 focus:border-primary/50 focus:ring-primary/50'
+                  type='text'
+                  ref={inputTaskRef}
+                  onBlur={() => {
+                    setInputTitle(task.title)
+                    setIsEditing(false)
+                  }}
+                  enterKeyHint='Done'
+                  // onKeyPress={(e) => handleKeyPress(e, updateTask)}
+                />
+              </form>
             ) : (
               <p
                 className={cn(
