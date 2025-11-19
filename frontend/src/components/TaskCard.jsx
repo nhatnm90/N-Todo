@@ -125,7 +125,7 @@ const TaskCard = ({ index, task, setActiveTask }) => {
           </div>
         </div>
         {/* Nút edit và delete */}
-        <div className='hidden gap-2 group-hover:inline-flex animate-slide-up'>
+        <div className='hidden gap-2 group-hover:inline-flex group-active:inline-flex animate-slide-up'>
           <Button
             onClick={() => setIsEditing(true)}
             variant='ghost'
