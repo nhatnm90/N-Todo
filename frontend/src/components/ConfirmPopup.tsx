@@ -8,9 +8,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog.tsx'
 
-const ConfirmPopup = ({ title, message, children, cancelText = 'Cancel', confirmText = 'Continue', handleConfirm }) => {
+type ConfirmPopupProps = {
+  title: string
+  message: string
+  children: any
+  cancelText?: string
+  confirmText?: string
+  handleConfirm: () => void
+}
+
+const ConfirmPopup = ({
+  title,
+  message,
+  children,
+  cancelText = 'Cancel',
+  confirmText = 'Continue',
+  handleConfirm
+}: ConfirmPopupProps) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>

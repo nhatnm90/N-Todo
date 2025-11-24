@@ -1,8 +1,8 @@
 import { Toaster } from 'sonner'
 import { BrowserRouter, Routes, Route } from 'react-router'
-import HomePage from './pages/HomePage'
-import NotFound from './pages/NotFound'
-import SignInPage from '@/pages/SignInPage'
+import NotFound from '@/pages/NotFound.tsx'
+import SignInPage from '@/pages/SignInPage.tsx'
+import HomePage from '@/pages/HomePage.tsx'
 
 function App() {
   return (

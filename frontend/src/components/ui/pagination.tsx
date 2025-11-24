@@ -1,8 +1,6 @@
-import * as React from 'react'
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
-
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils.ts'
+import { buttonVariants } from '@/components/ui/button.tsx'
 
 function Pagination({ className, ...props }: any) {
   return (

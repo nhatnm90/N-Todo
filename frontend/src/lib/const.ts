@@ -2,7 +2,9 @@ export const FilterType = {
   all: 'all',
   active: 'active',
   completed: 'completed'
-}
+} as const
+
+export type FilterKey = keyof typeof FilterType
 
 export const DateFilterType = [
   {

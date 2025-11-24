@@ -1,7 +1,5 @@
-import * as React from 'react'
 import * as PopoverPrimitive from '@radix-ui/react-popover'
-
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils.ts'
 
 function Popover({ ...props }) {
   return <PopoverPrimitive.Root data-slot='popover' {...props} />

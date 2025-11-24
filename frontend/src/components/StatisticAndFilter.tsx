@@ -1,14 +1,14 @@
 import React from 'react'
-import { Badge } from '@/components/ui/badge'
-import { FilterType } from '@/lib/const'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge.tsx'
+import { FilterType, type FilterKey } from '@/lib/const.ts'
+import { Button } from '@/components/ui/button.tsx'
 import { Filter } from 'lucide-react'
 
 type StatisticFilterProps = {
   completedTask: number
   activeTask: number
   filter: String
-  setFilter: (prev) => void
+  setFilter: (prev: string) => void
 }
 
 const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter }: StatisticFilterProps) => {
@@ -25,7 +25,7 @@ const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter 
       </div>
       {/* Filter */}
       <div className='flex flex-col gap-2 sm:flex-row'>
-        {Object.keys(FilterType).map((type) => (
+        {(Object.keys(FilterType) as FilterKey[]).map((type) => (
           <Button
             onClick={() => {
               setFilter(type)

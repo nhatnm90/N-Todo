@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Header = () => {
   return (
     // space-y-2: để những phần tử con cách nhau ra

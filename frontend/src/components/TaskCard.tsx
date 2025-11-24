@@ -1,26 +1,24 @@
-import ConfirmPopup from '@/components/ConfirmPopup'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import api from '@/lib/axios'
-import { cn } from '@/lib/utils'
+import ConfirmPopup from '@/components/ConfirmPopup.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Card } from '@/components/ui/card.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import api from '@/lib/axios.ts'
+import { cn } from '@/lib/utils.ts'
 import { Calendar, CheckCircle2, Circle, SquarePen, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import SwipeItem from '@/components/SwipeItem'
+import SwipeItem from '@/components/SwipeItem.tsx'
 
 type TaskCardProps = {
   index: number
   task: any
-  setActiveTask: () => void
+  setActiveTask: any
 }
 
 const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
-  const inputTaskRef = useRef(null)
+  const inputTaskRef = useRef<HTMLInputElement>(null)
   const [inputTitle, setInputTitle] = useState(task.title)
   const [isEditing, setIsEditing] = useState(false)
-  // const [isOpenAlert, setIsOpenAlert] = useState(false)
-  // const { isMobileDevice } = useDeviceDetection()
 
   const updateTask = async (isCompleted = null) => {
     try {
@@ -40,7 +38,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
     }
   }
 
-  const deleteTask = async (taskId) => {
+  const deleteTask = async (taskId: number) => {
     try {
       await api.delete(`/tasks/${taskId}`)
       toast.success('Task deleted')
@@ -53,7 +51,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
 
   useEffect(() => {
     if (isEditing) {
-      inputTaskRef.current.focus()
+      inputTaskRef.current?.focus()
     }
   }, [isEditing])
 
@@ -72,7 +70,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
           {/* Nút tròn
         flex=shrink-0: chắc chắn là button không bị co lại trên màn hình nhỏ*/}
           <Button
-            onClick={() => updateTask(task.status !== 'completed')}
+            onClick={() => updateTask(task && task.status !== 'completed')}
             variant='ghost'
             size='icon'
             className={cn(
@@ -95,7 +93,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
               >
                 <Input
                   value={inputTitle}
-                  onChange={(e) => setInputTitle(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputTitle(e.target.value)}
                   placeholder='Wanna update something? Press done for saving'
                   className='flex-1 h-12 text-base border-border/50 focus:border-primary/50 focus:ring-primary/50'
                   type='text'

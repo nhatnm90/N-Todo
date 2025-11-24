@@ -7,7 +7,7 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
+    "module": "nodenext",
     "target": "es2020",
     "types": [],
     // For nodejs:
@@ -43,7 +43,13 @@
     "rootDir": "./src", // Thư mục chứa code nguồn (TS/TSX files)
     "outDir": "./dist", // Thư mục đầu ra cho code đã biên dịch (nếu bạn dùng tsc để build)
     "allowJs": true, // Cho phép biên dịch các file .js/.jsx
-    "skipLibCheck": true // Bỏ qua kiểm tra kiểu dữ liệu của các file trong node_modules
+    "skipLibCheck": true, // Bỏ qua kiểm tra kiểu dữ liệu của các file trong node_modules,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"], // Chỉ định những file nào cần được biên dịch
   "exclude": ["node_modules"] // Loại trừ các thư mục không cần biên dịch

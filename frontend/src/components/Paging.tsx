@@ -6,8 +6,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious
-} from '@/components/ui/pagination'
-import { cn } from '@/lib/utils'
+} from '@/components/ui/pagination.tsx'
+import { cn } from '@/lib/utils.ts'
 
 type PagingProps = {
   currentPage: number

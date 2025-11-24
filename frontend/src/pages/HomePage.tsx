@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Header from '@/components/Header'
-import AddTask from '@/components/AddTask'
-import Footer from '@/components/Footer'
-import DatetimeFilter from '@/components/DatetimeFilter'
-import Paging from '@/components/Paging'
-import StatisticFilter from '@/components/StatisticAndFilter'
-import Tasks from '@/components/Tasks'
+import Header from '@/components/Header.tsx'
+import AddTask from '@/components/AddTask.tsx'
+import Footer from '@/components/Footer.tsx'
+import DatetimeFilter from '@/components/DatetimeFilter.tsx'
+import Paging from '@/components/Paging.tsx'
+import StatisticFilter from '@/components/StatisticAndFilter.tsx'
+import Tasks from '@/components/Tasks.tsx'
 import { toast } from 'sonner'
-import api from '@/lib/axios'
-import { PAGE_SIZE } from '@/lib/const'
-import ConfirmPopup from '@/components/ConfirmPopup'
+import api from '@/lib/axios.ts'
+import { PAGE_SIZE } from '@/lib/const.ts'
 
 const HomePage = () => {
   const [filter, setFilter] = useState('all')
@@ -35,7 +34,7 @@ const HomePage = () => {
     fetchTasks()
   }, [activeTask, dateQuery, currentPage])
 
-  const filterTasks = taskBuffer.filter((task) => {
+  const filterTasks = taskBuffer.filter((task: any) => {
     switch (filter) {
       case 'completed':
         return task.status === 'completed'
@@ -68,7 +67,7 @@ const HomePage = () => {
     }
   }
 
-  const handlePageChange = (nextPage) => {
+  const handlePageChange = (nextPage: number) => {
     setCurrentPage(nextPage)
   }
 

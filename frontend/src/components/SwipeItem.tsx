@@ -1,20 +1,19 @@
-import ConfirmPopup from '@/components/ConfirmPopup'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils.ts'
 import { SquarePen, Trash2 } from 'lucide-react'
 import React, { useRef, useState, useCallback } from 'react'
 
 const ACTION_WIDTH = 80 // Chiều rộng tối đa của nút Xóa
 
 type SwipeItemProps = {
-  children: any,
-  onDelete: any,
-  taskId: any,
-  onEdit: any,
+  children: React.ReactNode
+  onDelete: any
+  taskId: any
+  onEdit: any
   taskCompletedAt: any
 }
 
 function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }: SwipeItemProps) {
-  const itemRef = useRef(null)
+  const itemRef = useRef<HTMLDivElement | null>(null)
   const [dragX, setDragX] = useState(0)
   const [startX, setStartX] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
@@ -24,12 +23,14 @@ function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }: Swip
     if (itemRef.current) {
       const style = itemRef.current.style.transform
       const match = style.match(/translateX\(([^)]+)\)/)
-      return match ? parseFloat(match[1]) : 0
+      if (match && match[1] !== undefined) {
+        return parseFloat(match[1])
+      }
     }
     return 0
   }
 
-  const applyTransform = useCallback((x, animate = false) => {
+  const applyTransform = useCallback((x: number, animate = false) => {
     // Capped giữa -ACTION_WIDTH và 0
     const translateX = Math.max(Math.min(0, x), -ACTION_WIDTH)
     if (itemRef.current) {
@@ -41,13 +42,13 @@ function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }: Swip
     setDragX(translateX)
   }, [])
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: any) => {
     setIsDragging(true)
     setStartX(e.touches[0].clientX)
     setDragX(getTranslateX())
   }
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (e: any) => {
     if (!isDragging) return
     const currentX = e.touches[0].clientX
     const deltaX = currentX - startX

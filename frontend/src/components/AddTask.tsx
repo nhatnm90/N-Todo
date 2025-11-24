@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import api from '@/lib/axios'
-import { handleKeyPress } from '@/lib/utils'
+import { Button } from '@/components/ui/button.tsx'
+import { Card } from '@/components/ui/card.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import api from '@/lib/axios.ts'
+import { handleKeyPress } from '@/lib/utils.ts'
 import { Plus } from 'lucide-react'
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 interface AddTaskProps {
@@ -12,7 +12,7 @@ interface AddTaskProps {
 }
 
 const AddTask = ({ setActiveTask }: AddTaskProps) => {
-  const inputTitleRef = useRef(null)
+  const inputTitleRef = useRef<HTMLInputElement>(null)
   const [inputTitle, setInputTitle] = useState('')
 
   const addTask = async () => {
@@ -22,7 +22,7 @@ const AddTask = ({ setActiveTask }: AddTaskProps) => {
       })
       if (res && res.status === 201) {
         toast.success('Task added')
-        setActiveTask((prev) => prev + 1)
+        setActiveTask((prev: string) => prev + 1)
       }
     } catch (err) {
       console.error('Error when fetching tasks: ', err)
@@ -50,9 +50,9 @@ const AddTask = ({ setActiveTask }: AddTaskProps) => {
       <div className='flex flex-col gap-3 sm:flex-row'>
         <Input
           value={inputTitle}
-          onChange={(e) => setInputTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputTitle(e.target.value)}
           ref={inputTitleRef}
-          onKeyPress={(e) => {
+          onKeyPress={(e: React.ChangeEvent<HTMLInputElement>) => {
             handleKeyPress(e, handleAddTask)
           }}
           type='text'
