@@ -21,7 +21,6 @@ const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter 
         {Object.keys(FilterType).map((type) => (
           <Button
             onClick={() => {
-              console.log(type)
               setFilter(type)
             }}
             type='button'

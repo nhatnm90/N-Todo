@@ -21,24 +21,17 @@ function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }) {
     return 0
   }
 
-  const applyTransform = useCallback(
-    // [SỬA ĐIỂM 1]: Thêm đối số 'animate' (mặc định là false)
-    (x, animate = false) => {
-      // Capped giữa -ACTION_WIDTH và 0
-      const translateX = Math.max(Math.min(0, x), -ACTION_WIDTH)
-      console.log(translateX)
-      if (itemRef.current) {
-        console.log(itemRef.current)
-        // [SỬA ĐIỂM 2]: Sử dụng biến 'animate' để điều khiển transition
-        // Khi kéo (animate=false), transition là 'none'.
-        // Khi snap (animate=true), transition là 'transform 0.2s ease-out'.
-        itemRef.current.style.transition = animate ? 'transform 0.2s ease-out' : 'none'
-        itemRef.current.style.transform = `translateX(${translateX}px)`
-      }
-      setDragX(translateX)
-    },
-    [] // [SỬA ĐIỂM 3]: Bỏ dependency isDragging vì nó không cần thiết nữa.
-  )
+  const applyTransform = useCallback((x, animate = false) => {
+    // Capped giữa -ACTION_WIDTH và 0
+    const translateX = Math.max(Math.min(0, x), -ACTION_WIDTH)
+    if (itemRef.current) {
+      // Khi kéo (animate=false), transition là 'none'.
+      // Khi snap (animate=true), transition là 'transform 0.2s ease-out'.
+      itemRef.current.style.transition = animate ? 'transform 0.2s ease-out' : 'none'
+      itemRef.current.style.transform = `translateX(${translateX}px)`
+    }
+    setDragX(translateX)
+  }, [])
 
   const handleTouchStart = (e) => {
     setIsDragging(true)
@@ -65,16 +58,13 @@ function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }) {
     // Logic snap:
     const targetX = dragX < -ACTION_WIDTH / 2 ? -ACTION_WIDTH : 0
 
-    // [SỬA ĐIỂM 4]: Gọi applyTransform với animate = true để có hiệu ứng snap
     applyTransform(targetX, true)
 
     setIsDragging(false)
   }
 
   const closeItem = () => {
-    // [SỬA ĐIỂM 5]: Gọi applyTransform(0, true) để đóng item MỘT CÁCH MƯỢT MÀ
     applyTransform(0, true)
-    // Đảm bảo trạng thái drag được reset
     setIsDragging(false)
   }
 
