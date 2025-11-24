@@ -34,21 +34,24 @@ const HomePage = () => {
     fetchTasks()
   }, [activeTask, dateQuery, currentPage])
 
-  const filterTasks = taskBuffer.filter((task: any) => {
-    switch (filter) {
-      case 'completed':
-        return task.status === 'completed'
-      case 'active':
-        return task.status === 'active'
-      case 'all':
-      default:
-        return true
-    }
-  })
+  const filterTasks =
+    taskBuffer.length > 0 &&
+    taskBuffer.filter((task: any) => {
+      switch (filter) {
+        case 'completed':
+          return task.status === 'completed'
+        case 'active':
+          return task.status === 'active'
+        case 'all':
+        default:
+          return true
+      }
+    })
 
-  const visibleTasks = filterTasks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const visibleTasks =
+    filterTasks && filter.length > 0 && filterTasks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
-  const totalPages = Math.ceil(filterTasks.length / PAGE_SIZE)
+  const totalPages = filterTasks && filter.length > 0 ? Math.ceil(filterTasks.length / PAGE_SIZE) : 0
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/immutability
