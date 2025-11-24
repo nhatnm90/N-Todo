@@ -1,9 +1,13 @@
 import express from 'express'
-import taskRouter from './routes/tasksRouters.js'
+import taskRoute from './routes/tasksRoute.js'
+import authRoute from './routes/authRoute.js'
+import userRoute from './routes/userRoute.js'
 import { connectDB } from './config/db.js'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
+import cookieParser from 'cookie-parser'
+import { protectRoute } from './middlewares/authMiddleware.js'
 
 dotenv.config()
 
@@ -13,12 +17,19 @@ const app = express()
 
 // middlewares
 app.use(express.json())
+app.use(cookieParser())
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(cors({ origin: ['http://localhost:5173'] }))
 }
 
-app.use('/api/tasks', taskRouter)
+// public routes
+app.use('/api/auth', authRoute)
+app.use('/api/tasks', taskRoute)
+
+// private routes
+app.use(protectRoute)
+app.use('/api/user', userRoute)
 
 if (process.env.NODE_ENV === 'production') {
   /*

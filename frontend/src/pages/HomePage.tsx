@@ -52,6 +52,7 @@ const HomePage = () => {
   const totalPages = Math.ceil(filterTasks.length / PAGE_SIZE)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     handlePageChange(1)
   }, [filter, dateQuery])
 
@@ -114,7 +115,7 @@ const HomePage = () => {
               totalPages={totalPages}
             />
 
-            <DatetimeFilter dateQuery={dateQuery} setDateQuery={setDateQuery} />
+            <DatetimeFilter dateQuery={dateQuery} setDateQuery={() => setDateQuery} />
           </div>
           {/* Footer */}
           <Footer activeTask={activeTask} completedTask={completedTask} />

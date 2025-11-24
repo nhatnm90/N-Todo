@@ -7,7 +7,11 @@ import { Plus } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-const AddTask = ({ setActiveTask }) => {
+interface AddTaskProps {
+  setActiveTask: (prev: any) => void
+}
+
+const AddTask = ({ setActiveTask }: AddTaskProps) => {
   const inputTitleRef = useRef(null)
   const [inputTitle, setInputTitle] = useState('')
 

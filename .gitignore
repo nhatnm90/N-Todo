@@ -1,6 +1,6 @@
 .env
 /node_modules/
-
+.vscode/
 # React Router
 /.react-router/
 /build/

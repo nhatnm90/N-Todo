@@ -9,7 +9,15 @@ import {
 } from '@/components/ui/pagination'
 import { cn } from '@/lib/utils'
 
-const Paging = ({ currentPage, totalPages, handleNextPage, handlePrevPage, handlePageChange }) => {
+type PagingProps = {
+  currentPage: number
+  totalPages: number
+  handleNextPage: any
+  handlePrevPage: any
+  handlePageChange: any
+}
+
+const Paging = ({ currentPage, totalPages, handleNextPage, handlePrevPage, handlePageChange }: PagingProps) => {
   const generatePages = () => {
     let pages = []
     if (totalPages < 4) {

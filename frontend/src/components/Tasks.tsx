@@ -1,6 +1,11 @@
 import TaskCard from '@/components/TaskCard'
 import TaskEmpty from '@/components/TaskEmpty'
-import { FilterType } from '@/lib/const'
+
+type TasksProps = {
+  filter: string
+  taskBuffer: any
+  setActiveTask: () => void
+}
 
 const Tasks = ({ filter, taskBuffer, setActiveTask }) => {
   const items = taskBuffer //.filter((x) => filter === FilterType.all || x.status === filter)

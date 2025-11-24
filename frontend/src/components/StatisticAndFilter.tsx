@@ -4,7 +4,14 @@ import { FilterType } from '@/lib/const'
 import { Button } from '@/components/ui/button'
 import { Filter } from 'lucide-react'
 
-const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter }) => {
+type StatisticFilterProps = {
+  completedTask: number
+  activeTask: number
+  filter: String
+  setFilter: (prev) => void
+}
+
+const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter }: StatisticFilterProps) => {
   return (
     <div className='flex flex-col item-start justify-between gap-4 sm:flex-row sm:items-center'>
       {/* Statistic */}
@@ -21,7 +28,6 @@ const StatisticFilter = ({ completedTask = 0, activeTask = 0, filter, setFilter 
         {Object.keys(FilterType).map((type) => (
           <Button
             onClick={() => {
-              console.log(type)
               setFilter(type)
             }}
             type='button'
