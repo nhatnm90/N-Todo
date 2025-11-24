@@ -2,6 +2,10 @@ import { Card } from '@/components/ui/card'
 import { FilterType } from '@/lib/const'
 import { Circle } from 'lucide-react'
 
+type TaskEmptyProps = {
+  filter: string
+}
+
 const TaskEmpty = ({ filter }) => {
   return (
     <Card className='p-8 text-center border-0 bg-gradient-card shadow-custom-md'>

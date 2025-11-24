@@ -1,4 +1,9 @@
-const Footer = ({ completedTask = 0, activeTask = 0 }) => {
+type FooterProps = {
+  completedTask: number
+  activeTask: number
+}
+
+const Footer = ({ completedTask = 0, activeTask = 0 }: FooterProps) => {
   return (
     <>
       {' '}

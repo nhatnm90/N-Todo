@@ -7,7 +7,12 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { DateFilterType } from '@/lib/const'
 
-const DatetimeFilter = ({ dateQuery, setDateQuery }) => {
+type DatetimeFilterProps = {
+  dateQuery: String
+  setDateQuery: (prev: String) => void
+}
+
+const DatetimeFilter = ({ dateQuery, setDateQuery }: DatetimeFilterProps) => {
   const [open, setOpen] = React.useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen}>

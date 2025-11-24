@@ -5,7 +5,15 @@ import React, { useRef, useState, useCallback } from 'react'
 
 const ACTION_WIDTH = 80 // Chiều rộng tối đa của nút Xóa
 
-function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }) {
+type SwipeItemProps = {
+  children: any,
+  onDelete: any,
+  taskId: any,
+  onEdit: any,
+  taskCompletedAt: any
+}
+
+function SwipeItem({ children, onDelete, taskId, onEdit, taskCompletedAt }: SwipeItemProps) {
   const itemRef = useRef(null)
   const [dragX, setDragX] = useState(0)
   const [startX, setStartX] = useState(0)
