@@ -19,18 +19,6 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({ origin: ['http://localhost:5173'] }))
-}
-
-// public routes
-app.use('/api/auth', authRoute)
-app.use('/api/tasks', taskRoute)
-
-// private routes
-app.use(protectRoute)
-app.use('/api/user', userRoute)
-
 if (process.env.NODE_ENV === 'production') {
   /*
   tạo biến lưu đường dẫn tuyệt đối đến thư mục hiện tại trên server
@@ -47,6 +35,18 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
   })
 }
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({ origin: ['http://localhost:5173'] }))
+}
+
+// public routes
+app.use('/api/auth', authRoute)
+app.use('/api/tasks', taskRoute)
+
+// private routes
+app.use(protectRoute)
+app.use('/api/user', userRoute)
 
 connectDB().then(
   app.listen(process.env.PORT, () => {
