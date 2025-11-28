@@ -1,4 +1,4 @@
-import ConfirmPopup from '@/components/ConfirmPopup.tsx'
+import ConfirmPopup from '@/components/tasks/ConfirmPopup.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
 import { Input } from '@/components/ui/input.tsx'
@@ -7,44 +7,41 @@ import { cn } from '@/lib/utils.ts'
 import { Calendar, CheckCircle2, Circle, SquarePen, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import SwipeItem from '@/components/SwipeItem.tsx'
+import SwipeItem from '@/components/tasks/SwipeItem.tsx'
+import { taskService } from '@/services/taskService.ts'
 
 type TaskCardProps = {
   index: number
   task: any
-  setActiveTask: any
+  fetchTask: () => void
 }
 
-const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
+const TaskCard = ({ index, task, fetchTask }: TaskCardProps) => {
   const inputTaskRef = useRef<HTMLInputElement>(null)
   const [inputTitle, setInputTitle] = useState(task.title)
   const [isEditing, setIsEditing] = useState(false)
 
   const updateTask = async (isCompleted = null) => {
-    try {
-      const payload =
-        isCompleted === null || isCompleted === undefined
-          ? { title: inputTitle }
-          : { status: isCompleted ? 'completed' : 'active', completedAt: isCompleted ? new Date().toISOString() : null }
-      const res = await api.put(`/tasks/${task._id}`, payload)
-      if (res && res.status === 201) {
-        setIsEditing(false)
-        toast.success('This task was updated successfully')
-        setActiveTask()
-      }
-    } catch (error) {
-      console.error('Error when updating task: ', error)
+    const payload =
+      isCompleted === null || isCompleted === undefined
+        ? { title: inputTitle }
+        : { status: isCompleted ? 'completed' : 'active', completedAt: isCompleted ? new Date().toISOString() : null }
+    const res = await taskService.updateTask(task._id, payload)
+    if (res && res.status === 201) {
+      setIsEditing(false)
+      toast.success('This task was updated successfully')
+      fetchTask()
+    } else {
       toast.error('System error')
     }
   }
 
   const deleteTask = async (taskId: number) => {
-    try {
-      await api.delete(`/tasks/${taskId}`)
+    const res = await taskService.deleteTask(taskId)
+    if (res && res.status === 200) {
       toast.success('Task deleted')
-      setActiveTask()
-    } catch (error) {
-      console.error('Error when deleting task: ', error)
+      fetchTask()
+    } else {
       toast.error('System error')
     }
   }
@@ -75,9 +72,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
             size='icon'
             className={cn(
               'flex-shrink-0 size-8 rounded-full transition-all duration-200',
-              task.status === 'completed'
-                ? 'text-success hover:text-success/80'
-                : 'text-muted-foreground hover:text-primary'
+              task.status === 'completed' ? 'text-success hover:text-success/80' : 'text-muted-foreground'
             )}
           >
             {task.status === 'completed' ? <CheckCircle2 size='5' /> : <Circle size='5' />}
@@ -102,7 +97,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
                     setInputTitle(task.title)
                     setIsEditing(false)
                   }}
-                  enterKeyHint='Done'
+                  enterKeyHint='done'
                   // onKeyPress={(e) => handleKeyPress(e, updateTask)}
                 />
               </form>
@@ -110,7 +105,7 @@ const TaskCard = ({ index, task, setActiveTask }: TaskCardProps) => {
               <p
                 className={cn(
                   'text-base transition-all duration-200',
-                  task.status === 'completed' ? 'line-through text-muted-foreground' : 'text-foreground'
+                  task.status === 'completed' ? 'line-through text-success' : 'text-foreground'
                 )}
               >
                 {task.title}

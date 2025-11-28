@@ -9,7 +9,7 @@ import { DateFilterType } from '@/lib/const.ts'
 
 type DatetimeFilterProps = {
   dateQuery: String
-  setDateQuery: (prev: String) => void
+  setDateQuery: React.Dispatch<React.SetStateAction<string>>
 }
 
 const DatetimeFilter = ({ dateQuery, setDateQuery }: DatetimeFilterProps) => {

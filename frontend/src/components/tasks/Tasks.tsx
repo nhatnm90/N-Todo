@@ -1,13 +1,13 @@
-import TaskCard from '@/components/TaskCard.tsx'
-import TaskEmpty from '@/components/TaskEmpty.tsx'
+import TaskCard from '@/components/tasks/TaskCard.tsx'
+import TaskEmpty from '@/components/tasks/TaskEmpty.tsx'
 
 type TasksProps = {
   filter: string
   taskBuffer: any
-  setActiveTask: React.Dispatch<React.SetStateAction<number>>
+  fetchTask: () => void
 }
 
-const Tasks = ({ filter, taskBuffer, setActiveTask }: TasksProps) => {
+const Tasks = ({ filter, taskBuffer, fetchTask }: TasksProps) => {
   const items = taskBuffer //.filter((x) => filter === FilterType.all || x.status === filter)
   // const items = taskBuffer.filter((x) => filter === FilterType.all || x.status === filter)
   return (
@@ -16,7 +16,7 @@ const Tasks = ({ filter, taskBuffer, setActiveTask }: TasksProps) => {
       <div className='space-y-3'>
         {items &&
           items.map((task: any, index: number) => (
-            <TaskCard setActiveTask={setActiveTask} index={index} key={task?._id ?? index} task={task} />
+            <TaskCard fetchTask={fetchTask} index={index} key={task?._id ?? index} task={task} />
           ))}
       </div>
     </>

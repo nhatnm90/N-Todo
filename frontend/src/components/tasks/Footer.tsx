@@ -9,7 +9,7 @@ const Footer = ({ completedTask = 0, activeTask = 0 }: FooterProps) => {
       {' '}
       {(completedTask > 0 || activeTask > 0) && (
         <div className='text-center'>
-          <p className='text-muted-foreground'>
+          <p className='text-sm text-muted-foreground'>
             {completedTask > 0 ? (
               <>
                 Congrats! You have completed {completedTask} task(s)

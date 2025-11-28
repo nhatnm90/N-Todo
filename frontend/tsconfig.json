@@ -9,7 +9,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "es2020",
-    "types": [],
+    "types": ["vite/client"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -51,6 +51,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"], // Chỉ định những file nào cần được biên dịch
+  "include": ["src", "src/**/*.ts", "src/**/*.tsx"], // Chỉ định những file nào cần được biên dịch
   "exclude": ["node_modules"] // Loại trừ các thư mục không cần biên dịch
 }

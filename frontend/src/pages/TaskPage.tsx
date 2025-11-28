@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import Header from '@/components/Header.tsx'
-import AddTask from '@/components/AddTask.tsx'
-import Footer from '@/components/Footer.tsx'
-import DatetimeFilter from '@/components/DatetimeFilter.tsx'
-import Paging from '@/components/Paging.tsx'
-import StatisticFilter from '@/components/StatisticAndFilter.tsx'
-import Tasks from '@/components/Tasks.tsx'
+import { useEffect, useState } from 'react'
+import Header from '@/components/tasks/Header.tsx'
+import AddTask from '@/components/tasks/AddTask.tsx'
+import Footer from '@/components/tasks/Footer.tsx'
+import DatetimeFilter from '@/components/tasks/DatetimeFilter.tsx'
+import Paging from '@/components/tasks/Paging.tsx'
+import StatisticFilter from '@/components/tasks/StatisticAndFilter.tsx'
+import Tasks from '@/components/tasks/Tasks.tsx'
 import { toast } from 'sonner'
-import api from '@/lib/axios.ts'
 import { PAGE_SIZE } from '@/lib/const.ts'
+import { taskService } from '@/services/taskService.ts'
 
-const HomePage = () => {
+const TaskPage = () => {
   const [filter, setFilter] = useState('all')
   const [taskBuffer, setTaskBuffer] = useState([])
   const [activeTask, setActiveTask] = useState(0)
@@ -18,19 +18,19 @@ const HomePage = () => {
   const [dateQuery, setDateQuery] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const res = await api.get(dateQuery === 'all' ? '/tasks' : `/tasks?filter=${dateQuery}`)
-        console.log(res.data)
-        setTaskBuffer(res.data.tasks)
-        setActiveTask(res.data.activeTask)
-        setCompletedTask(res.data.completedTask)
-      } catch (err) {
-        console.error('Error when fetching tasks: ', err)
-        toast.error('Error when fetching tasks')
-      }
+  const fetchTasks = async () => {
+    try {
+      const res = await taskService.getTasks(dateQuery)
+      setTaskBuffer(res.tasks)
+      setActiveTask(res.activeTask)
+      setCompletedTask(res.completedTask)
+    } catch (err) {
+      console.error('Error when fetching tasks: ', err)
+      toast.error('Error when fetching tasks')
     }
+  }
+
+  useEffect(() => {
     fetchTasks()
   }, [activeTask, dateQuery, currentPage])
 
@@ -80,6 +80,8 @@ const HomePage = () => {
       <div
         className='absolute inset-0 z-0'
         style={{
+          // backgroundImage: `radial-gradient(125% 125% at 50% 10%, #ffffff 40%, #10b981 100%)`
+          // backgroundSize: '100% 100%'
           background: `linear-gradient(225deg, #FFB3D9 0%, #FFD1DC 20%, #FFF0F5 40%, #E6F3FF 60%, #D1E7FF 80%, #C7E9F1 100%)`
         }}
       />
@@ -102,7 +104,7 @@ const HomePage = () => {
           />
 
           {/* List task */}
-          <Tasks filter={filter} taskBuffer={visibleTasks} setActiveTask={setActiveTask} />
+          <Tasks filter={filter} taskBuffer={visibleTasks} fetchTask={fetchTasks} />
 
           {/* Paging + Datetime filter
             justify-between: canh giữa và dàn đều 2 bên
@@ -117,7 +119,7 @@ const HomePage = () => {
               totalPages={totalPages}
             />
 
-            <DatetimeFilter dateQuery={dateQuery} setDateQuery={() => setDateQuery} />
+            <DatetimeFilter dateQuery={dateQuery} setDateQuery={setDateQuery} />
           </div>
           {/* Footer */}
           <Footer activeTask={activeTask} completedTask={completedTask} />
@@ -127,4 +129,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default TaskPage

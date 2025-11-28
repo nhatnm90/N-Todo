@@ -1,6 +1,6 @@
-import { SignInForm } from '@/components/auth/signin-form.tsx'
+import { SignupForm } from '@/components/auth/signup-form.tsx'
 
-const SignInPage = () => {
+const SignUpPage = () => {
   return (
     <div className='bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10'>
       <div className='w-full max-w-sm md:max-w-4xl'>
@@ -12,11 +12,11 @@ const SignInPage = () => {
             // background: `linear-gradient(225deg, #FFB3D9 0%, #FFD1DC 20%, #FFF0F5 40%, #E6F3FF 60%, #D1E7FF 80%, #C7E9F1 100%)`
           }}
         >
-          <SignInForm />
+          <SignupForm />
         </div>
       </div>
     </div>
   )
 }
 
-export default SignInPage
+export default SignUpPage

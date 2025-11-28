@@ -20,12 +20,12 @@ app.use(express.json())
 app.use(cookieParser())
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({ origin: ['http://localhost:5173'] }))
+  app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
 }
 
 // public routes
 app.use('/api/auth', authRoute)
-app.use('/api/tasks', taskRoute)
+app.use('/api/tasks', protectRoute, taskRoute)
 
 // private routes
 // app.use(protectRoute)

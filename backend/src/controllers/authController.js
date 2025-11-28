@@ -6,6 +6,12 @@ import UserSession from '../models/UserSession.js'
 
 const ACCESS_TOKEN_TTL = '30m'
 const REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 14
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none', //backend và frontend chạy trên 2 domain khác nhau: none, giống nhau: strict
+  path: '/'
+}
 
 const signUp = async (req, res) => {
   try {
@@ -58,12 +64,7 @@ const signIn = async (req, res) => {
       expriredAt: new Date(Date.now() + REFRESH_TOKEN_TTL)
     })
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none', //backend và frontend chạy trên 2 domain khác nhau: none, giống nhau: strict
-      maxAge: REFRESH_TOKEN_TTL
-    })
+    res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: REFRESH_TOKEN_TTL })
 
     return res.status(200).json({ message: `User ${username} logged in succesfully`, accessToken })
   } catch (error) {
@@ -74,18 +75,46 @@ const signIn = async (req, res) => {
 
 const signOut = async (req, res) => {
   try {
-    const refreshToken = req.cookie?.refreshToken
+    const refreshToken = req.cookies?.refreshToken
 
     if (refreshToken) {
       await UserSession.deleteOne({ refreshToken })
-      res.clearCookie('refreshToken')
     }
-
-    return res.status(204)
+    res.clearCookie('refreshToken', cookieOptions)
+    return res.status(204).json({ message: 'Logged out successfully' })
   } catch (error) {
     console.log('Error when logging out user: ', error)
     res.status(500).json({ message: 'Intenal server error: ', error })
   }
 }
 
-export { signUp, signIn, signOut }
+const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'Token is not existed' })
+    }
+
+    const existedRefreshToken = await UserSession.findOne({ refreshToken })
+
+    if (!existedRefreshToken) {
+      return res.status(401).json({ message: 'Token is not existed or expired' })
+    }
+
+    if (existedRefreshToken.expriredAt < new Date()) {
+      return res.status(403).json({ message: 'Token is expired' })
+    }
+
+    const accessToken = jwt.sign({ userId: existedRefreshToken.userId }, process.env.ACCESS_TOKEN_SECRECT, {
+      expiresIn: ACCESS_TOKEN_TTL
+    })
+
+    return res.status(200).json({ accessToken })
+  } catch (error) {
+    console.log('Error when create refresh token user: ', error)
+    res.status(500).json({ message: 'Intenal server error: ', error })
+  }
+}
+
+export { signUp, signIn, signOut, refreshToken }

@@ -6,6 +6,7 @@ import { handleKeyPress } from '@/lib/utils.ts'
 import { Plus } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { taskService } from '@/services/taskService.ts'
 
 interface AddTaskProps {
   setActiveTask: (prev: any) => void
@@ -16,20 +17,14 @@ const AddTask = ({ setActiveTask }: AddTaskProps) => {
   const [inputTitle, setInputTitle] = useState('')
 
   const addTask = async () => {
-    try {
-      const res = await api.post('/tasks', {
-        title: inputTitle
-      })
-      if (res && res.status === 201) {
-        toast.success('Task added')
-        setActiveTask((prev: string) => prev + 1)
-      }
-    } catch (err) {
-      console.error('Error when fetching tasks: ', err)
+    const res = await taskService.addTask(inputTitle)
+    if (res && res.status === 201) {
+      toast.success('Task added')
+      setActiveTask((prev: string) => prev + 1)
+    } else {
       toast.error('Error when fetching tasks')
-    } finally {
-      setInputTitle('')
     }
+    setInputTitle('')
   }
 
   const handleAddTask = () => {
@@ -52,11 +47,11 @@ const AddTask = ({ setActiveTask }: AddTaskProps) => {
           value={inputTitle}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputTitle(e.target.value)}
           ref={inputTitleRef}
-          onKeyPress={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
             handleKeyPress(e, handleAddTask)
           }}
           type='text'
-          placeholder='Somthing that you wanna do?'
+          placeholder='Something that you wanna do?'
           className='h-12 text-base bg-slate-50 sm:flex-1 border-border/50 focus:border-primary/50 forcus:ring-primary/20'
         />
         <Button variant='gradient' size='xl' className='px-6' onClick={handleAddTask}>

@@ -12,9 +12,9 @@ import { cn } from '@/lib/utils.ts'
 type PagingProps = {
   currentPage: number
   totalPages: number
-  handleNextPage: any
-  handlePrevPage: any
-  handlePageChange: any
+  handleNextPage: () => void
+  handlePrevPage: () => void
+  handlePageChange: (number: number) => void
 }
 
 const Paging = ({ currentPage, totalPages, handleNextPage, handlePrevPage, handlePageChange }: PagingProps) => {
