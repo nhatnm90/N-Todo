@@ -1,4 +1,5 @@
 import Task from '../models/Tasks.js'
+import mongoose from 'mongoose'
 
 const getAllTasks = async (req, res) => {
   try {
@@ -19,10 +20,10 @@ const getAllTasks = async (req, res) => {
         break
       case 'all':
       default:
-        startDate = null
     }
 
-    const query = startDate ? { createdAt: { $gte: startDate } } : {}
+    const userId = new mongoose.Types.ObjectId(req.params.userId)
+    const query = startDate ? { userId, createdAt: { $gte: startDate } } : { userId }
 
     const result = await Task.aggregate([
       {
@@ -51,8 +52,8 @@ const getAllTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const { title } = req.body
-    const task = new Task({ title })
+    const payload = req.body
+    const task = new Task({ ...payload })
     const newTask = await task.save()
     res.status(201).json(newTask)
   } catch (error) {

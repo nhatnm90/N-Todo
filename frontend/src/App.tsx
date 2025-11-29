@@ -6,6 +6,7 @@ import TaskPage from '@/pages/TaskPage.tsx'
 import SignUpPage from '@/pages/SignUpPage.tsx'
 import ChatAppPage from '@/pages/ChatAppPage.tsx'
 import ProtectedRoute from '@/components/protectedRoute.tsx'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 function App() {
   return (

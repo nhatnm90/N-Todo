@@ -1,41 +1,25 @@
 import api from '@/lib/axios.ts'
+import type { TaskPayload } from '@/types/task.ts'
 
-const getTasks = async (dateQuery: string) => {
-  try {
-    const res = await api.get(dateQuery === 'all' ? '/tasks' : `/tasks?filter=${dateQuery}`)
-    return res.data
-  } catch (error) {
-    throw error
-  }
+const getTasks = async (dateQuery: string, userId: string) => {
+  const genDateQuery = dateQuery === 'all' ? '' : `?filter=${dateQuery}`
+  const res = await api.get(`/tasks/${userId}${genDateQuery}`)
+  return res.data
 }
 
-const addTask = async (title: string) => {
-  try {
-    const res = await api.post('/tasks', {
-      title
-    })
-    return res
-  } catch (err) {
-    console.error('Error when adding new task: ', err)
-  }
+const addTask = async (task: TaskPayload) => {
+  const res = await api.post('/tasks', task)
+  return res
 }
 
 const updateTask = async (taskId: string, payload: any) => {
-  try {
-    const res = await api.put(`/tasks/${taskId}`, payload)
-    return res
-  } catch (error) {
-    console.error('Error when updating task: ', error)
-  }
+  const res = await api.put(`/tasks/${taskId}`, payload)
+  return res
 }
 
-const deleteTask = async (taskId: number) => {
-  try {
-    const res = await api.delete(`/tasks/${taskId}`)
-    return res
-  } catch (error) {
-    console.error('Error when deleting task: ', error)
-  }
+const deleteTask = async (taskId: string) => {
+  const res = await api.delete(`/tasks/${taskId}`)
+  return res
 }
 
 export const taskService = { getTasks, addTask, updateTask, deleteTask }

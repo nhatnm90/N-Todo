@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import Header from '@/components/tasks/Header.tsx'
 import AddTask from '@/components/tasks/AddTask.tsx'
 import Footer from '@/components/tasks/Footer.tsx'
@@ -9,8 +9,12 @@ import Tasks from '@/components/tasks/Tasks.tsx'
 import { toast } from 'sonner'
 import { PAGE_SIZE } from '@/lib/const.ts'
 import { taskService } from '@/services/taskService.ts'
+import SignOut from '@/components/auth/signout.tsx'
+import { useAuthStore } from '@/stores/useAuthStore.ts'
+import UserSection from '@/components/auth/user-section.tsx'
 
 const TaskPage = () => {
+  const { user } = useAuthStore.getState()
   const [filter, setFilter] = useState('all')
   const [taskBuffer, setTaskBuffer] = useState([])
   const [activeTask, setActiveTask] = useState(0)
@@ -20,7 +24,8 @@ const TaskPage = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await taskService.getTasks(dateQuery)
+      if (!user) return
+      const res = await taskService.getTasks(dateQuery, user._id)
       setTaskBuffer(res.tasks)
       setActiveTask(res.activeTask)
       setCompletedTask(res.completedTask)
@@ -93,7 +98,7 @@ const TaskPage = () => {
           <Header />
 
           {/* Add new task */}
-          <AddTask setActiveTask={setActiveTask} />
+          <AddTask fetchTask={fetchTasks} />
 
           {/* Statistic and filter */}
           <StatisticFilter

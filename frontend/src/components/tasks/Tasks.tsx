@@ -8,14 +8,12 @@ type TasksProps = {
 }
 
 const Tasks = ({ filter, taskBuffer, fetchTask }: TasksProps) => {
-  const items = taskBuffer //.filter((x) => filter === FilterType.all || x.status === filter)
-  // const items = taskBuffer.filter((x) => filter === FilterType.all || x.status === filter)
   return (
     <>
-      {items.length === 0 && <TaskEmpty filter={filter} />}
+      {!taskBuffer && <TaskEmpty filter={filter} />}
       <div className='space-y-3'>
-        {items &&
-          items.map((task: any, index: number) => (
+        {taskBuffer &&
+          taskBuffer.map((task: any, index: number) => (
             <TaskCard fetchTask={fetchTask} index={index} key={task?._id ?? index} task={task} />
           ))}
       </div>

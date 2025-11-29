@@ -29,13 +29,13 @@ const SignOut = () => {
   }
 
   return (
-    <>
-      <Button variant='gradientSecondary' onClick={handleSignOut}>
+    <div className='flex flex-col items-center'>
+      <Button variant='gradient' onClick={handleSignOut}>
         Sign out
       </Button>
-      <Link to='/ntodo'>N Todo</Link>
-      <Button onClick={handleTest}>Test</Button>
-    </>
+      {/* <Link to='/ntodo'>N Todo</Link>
+      <Button onClick={handleTest}>Test</Button> */}
+    </div>
   )
 }
 

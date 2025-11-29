@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema(
       lowercase: true
     },
     hashedPassword: {
-      type: String,
-      required: true
+      type: String
+      // required: true
     },
     email: {
       type: String,

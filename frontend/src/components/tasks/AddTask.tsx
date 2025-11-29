@@ -7,24 +7,30 @@ import { Plus } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { taskService } from '@/services/taskService.ts'
+import { useAuthStore } from '@/stores/useAuthStore.ts'
+import type { TaskPayload } from '@/types/task.ts'
 
 interface AddTaskProps {
-  setActiveTask: (prev: any) => void
+  fetchTask: () => void
 }
 
-const AddTask = ({ setActiveTask }: AddTaskProps) => {
+const AddTask = ({ fetchTask }: AddTaskProps) => {
+  const { user } = useAuthStore.getState()
   const inputTitleRef = useRef<HTMLInputElement>(null)
   const [inputTitle, setInputTitle] = useState('')
 
   const addTask = async () => {
-    const res = await taskService.addTask(inputTitle)
-    if (res && res.status === 201) {
+    try {
+      if (!user) return
+      const taskPayload: TaskPayload = { title: inputTitle, userId: user._id }
+      await taskService.addTask(taskPayload)
       toast.success('Task added')
-      setActiveTask((prev: string) => prev + 1)
-    } else {
-      toast.error('Error when fetching tasks')
+      fetchTask()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setInputTitle('')
     }
-    setInputTitle('')
   }
 
   const handleAddTask = () => {

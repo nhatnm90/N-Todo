@@ -9,10 +9,11 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import SwipeItem from '@/components/tasks/SwipeItem.tsx'
 import { taskService } from '@/services/taskService.ts'
+import type { Task } from '@/types/task.ts'
 
 type TaskCardProps = {
   index: number
-  task: any
+  task: Task
   fetchTask: () => void
 }
 
@@ -21,28 +22,28 @@ const TaskCard = ({ index, task, fetchTask }: TaskCardProps) => {
   const [inputTitle, setInputTitle] = useState(task.title)
   const [isEditing, setIsEditing] = useState(false)
 
-  const updateTask = async (isCompleted = null) => {
+  const updateTask = async (isCompleted: boolean | null = null) => {
     const payload =
       isCompleted === null || isCompleted === undefined
         ? { title: inputTitle }
         : { status: isCompleted ? 'completed' : 'active', completedAt: isCompleted ? new Date().toISOString() : null }
-    const res = await taskService.updateTask(task._id, payload)
-    if (res && res.status === 201) {
+    try {
+      await taskService.updateTask(task._id, payload)
       setIsEditing(false)
       toast.success('This task was updated successfully')
       fetchTask()
-    } else {
-      toast.error('System error')
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const deleteTask = async (taskId: number) => {
-    const res = await taskService.deleteTask(taskId)
-    if (res && res.status === 200) {
+  const deleteTask = async (taskId: string) => {
+    try {
+      await taskService.deleteTask(taskId)
       toast.success('Task deleted')
       fetchTask()
-    } else {
-      toast.error('System error')
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -57,7 +58,7 @@ const TaskCard = ({ index, task, fetchTask }: TaskCardProps) => {
       <Card
         className={cn(
           'rounded-none p-4 bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group',
-          task.status === 'complete' && 'opacity-75'
+          task.status === 'completed' && 'opacity-75'
         )}
         style={{ animationDelay: `${index * 50}ms` }}
       >

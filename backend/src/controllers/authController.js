@@ -73,6 +73,55 @@ const signIn = async (req, res) => {
   }
 }
 
+const signInWithExternal = async (req, res) => {
+  try {
+    const { type, credentialResponse } = req.body
+    if (!credentialResponse) {
+      return res.status(400).json({ message: 'Missing information' })
+    }
+    const {
+      email,
+      given_name: firstName,
+      family_name: lastName,
+      name,
+      picture: avatarUrl
+    } = jwt.decode(credentialResponse.credential)
+
+    const username = name.trim().toLowerCase().split(' ').join('_')
+
+    let exitedUser = await User.findOne({ email })
+    if (!exitedUser) {
+      // create new user
+      exitedUser = await User.create({
+        email,
+        type,
+        firstName,
+        lastName,
+        username: `${username}_${new Date().getMilliseconds()}`,
+        avatarUrl
+      })
+    }
+
+    const accessToken = jwt.sign({ userId: exitedUser._id }, process.env.ACCESS_TOKEN_SECRECT, {
+      expiresIn: ACCESS_TOKEN_TTL
+    })
+
+    const refreshToken = crypto.randomBytes(64).toString('hex')
+    await UserSession.create({
+      userId: exitedUser._id,
+      refreshToken,
+      expriredAt: new Date(Date.now() + REFRESH_TOKEN_TTL)
+    })
+
+    res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: REFRESH_TOKEN_TTL })
+
+    return res.status(200).json({ message: `User ${username} logged in succesfully`, accessToken })
+  } catch (error) {
+    console.log('Error when logging in user: ', error)
+    res.status(500).json({ message: 'Intenal server error: ', error })
+  }
+}
+
 const signOut = async (req, res) => {
   try {
     const refreshToken = req.cookies?.refreshToken
@@ -117,4 +166,4 @@ const refreshToken = async (req, res) => {
   }
 }
 
-export { signUp, signIn, signOut, refreshToken }
+export { signUp, signIn, signOut, refreshToken, signInWithExternal }

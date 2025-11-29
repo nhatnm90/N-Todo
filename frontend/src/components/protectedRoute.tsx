@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores/useAuthStore.ts'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router'
 
 // const ProtectedRoute = () => {
@@ -31,7 +31,7 @@ import { Navigate, Outlet } from 'react-router'
 // }
 
 const ProtectedRoute = () => {
-  const { isLoading, accessToken, refresh } = useAuthStore()
+  const { isLoading, accessToken, user, refresh, fetchMe } = useAuthStore()
   const [isStarting, setIsStarting] = useState(true)
 
   const init = async () => {
@@ -39,6 +39,10 @@ const ProtectedRoute = () => {
       console.log('Chuẩn bị lấy accessToken mới')
       await refresh()
       console.log('Đã lấy accessToken mới')
+    }
+
+    if (accessToken && !user) {
+      await fetchMe()
     }
   }
 

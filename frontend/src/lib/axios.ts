@@ -1,8 +1,9 @@
 import { authService } from '@/services/authService.ts'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import { toast } from 'sonner'
 
-const IGNORE_REFRESH_URL = ['/auth/signin', '/auth/signup', '/auth/refresh']
+const IGNORE_REFRESH_URL = ['/auth/signin', '/auth/signup', '/auth/refreshtoken']
 interface RetryConfig extends InternalAxiosRequestConfig {
   _retryCount?: number
 }
@@ -40,6 +41,9 @@ C1: dùng 1 interface để extend từ Error config của Axios
   interface RetryConfig extends InternalAxiosRequestConfig {
     _retryCount?: number
   }
+  Tạo biến để giới hạn số lần retry
+  originalRequest._retryCount = originalRequest._retryCount || 0
+
 C2: dùng WeakMap
   const retryMap = new WeakMap<object, number>()
   const currentCount = retryMap.get(originalRequest) ?? 0
@@ -49,9 +53,6 @@ C2: dùng WeakMap
 const retryMap = new WeakMap<object, number>()
 const rejectPromise = async (error: AxiosError) => {
   const originalRequest = error.config as RetryConfig
-  console.info('originalRequest ', originalRequest)
-  console.info('error ', error)
-
   if (!originalRequest || (originalRequest?.url && IGNORE_REFRESH_URL.includes(originalRequest.url))) {
     return Promise.reject(error)
   }
@@ -63,23 +64,39 @@ const rejectPromise = async (error: AxiosError) => {
     return Promise.reject(error)
   }
 
-  //Tạo biến để giới hạn số lần retry
-  // originalRequest._retryCount = originalRequest._retryCount || 0
+  const errorCode = error.response?.status
 
-  if (error.response?.status === 403) {
-    retryMap.set(originalRequest, currentCount + 1)
-    try {
-      const newAccessToken = await authService.refresh()
-      if (originalRequest?.headers && newAccessToken) {
-        const { setAccessToken } = useAuthStore.getState()
-        setAccessToken(newAccessToken)
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-        return api(originalRequest)
+  switch (errorCode) {
+    case 401:
+      toast.warning('Session is expired, please help to sign in.')
+      break
+    case 403:
+      retryMap.set(originalRequest, currentCount + 1)
+      try {
+        const newAccessToken = await authService.refresh()
+        if (originalRequest?.headers && newAccessToken) {
+          const { setAccessToken } = useAuthStore.getState()
+          setAccessToken(newAccessToken)
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          return api(originalRequest)
+        }
+      } catch (refreshError) {
+        console.error('Error when auto refresh token: ', refreshError)
+        return Promise.reject(error)
       }
-    } catch (refreshError) {
-      console.error('Error when auto refresh token: ', refreshError)
-      return Promise.reject(error)
+      break
+    case 404:
+      toast.error('Resource does not existed')
+      console.error('Resource does not existed: ', error.response?.data)
+      break
+    case 500: {
+      console.log('Internal server error: ', error.response?.data)
+      toast.error('Internal server error. Please help to try again')
+      break
     }
+    default:
+      console.error('Default error: ', error)
+      break
   }
 
   return Promise.reject(error)
