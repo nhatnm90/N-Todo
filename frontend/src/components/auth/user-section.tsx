@@ -1,5 +1,5 @@
 import React from 'react'
-import { LogOut, OutdentIcon, Plus } from 'lucide-react'
+import { LogOut, OutdentIcon, Plus, User } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { Button } from '@/components/ui/button.tsx'
@@ -21,14 +21,18 @@ const UserSection = () => {
       console.error('Error when signout: ', error)
     }
   }
-  const secureUrl = user?.avatarUrl?.replace('http://', 'https://') || 'https://github.com/evilrabbit.png'
+
+  const secureUrl = user?.avatarUrl ? user?.avatarUrl.replace(/^http:\/\//i, 'https://') : undefined
+
   return (
     <div className='flex justify-end'>
       <Item variant='outline'>
         <ItemMedia>
           <Avatar className='size-8'>
-            <AvatarImage src={secureUrl} />
-            <AvatarFallback>ER</AvatarFallback>
+            <AvatarImage src={secureUrl} alt={user?.username || 'User avatar'} referrerPolicy='no-referrer' />
+            <AvatarFallback>
+              {user?.username ? user?.username.slice(0, 2).toUpperCase() : <User className='h-4 w-4' />}
+            </AvatarFallback>
           </Avatar>
         </ItemMedia>
         <ItemContent className='hidden md:block'>

@@ -1,0 +1,7 @@
+import { cn } from '@/lib/utils.ts'
+
+function Skeleton({ className, ...props }: any) {
+  return <div data-slot='skeleton' className={cn('bg-accent animate-pulse rounded-md', className)} {...props} />
+}
+
+export { Skeleton }

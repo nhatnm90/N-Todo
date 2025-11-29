@@ -9,3 +9,9 @@ export interface Task {
 
 // Dùng Partial để cho phép gửi lên các trường thiếu (optional)
 export interface TaskPayload extends Partial<Omit<Task, '_id' | 'createdAt'>> {}
+
+export interface TaskResponse {
+  tasks: Task[]
+  activeTask: number
+  completedTask: number
+}

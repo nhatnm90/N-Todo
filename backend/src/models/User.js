@@ -48,8 +48,7 @@ const userSchema = new mongoose.Schema(
     },
     logInType: {
       type: String,
-      enum: LOG_IN_TYPE,
-      default: 'EMAIL'
+      enum: LOG_IN_TYPE
     }
   },
   {

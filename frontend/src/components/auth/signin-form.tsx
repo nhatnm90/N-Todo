@@ -9,10 +9,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
 import { useNavigate } from 'react-router'
-import { useGoogleLogin } from '@react-oauth/google'
-import { GoogleLogin } from '@react-oauth/google'
-import { useGoogleOneTapLogin } from '@react-oauth/google'
-import api from '@/lib/axios.ts'
+import { useGoogleLogin, type TokenResponse } from '@react-oauth/google'
+import axios from 'axios'
+import { externalAuthService } from '@/services/externalAuthService.ts'
 
 const signInSchema = z.object({
   username: z.string().min(3, 'Username has at least 3 characters'),
@@ -39,11 +38,13 @@ export function SignInForm({ className, ...props }: React.ComponentProps<'div'>)
     navigate('/ntodo')
   }
 
-  const handleGoogleSignIn = async (credentialResponse: any) => {
-    await api.post('/auth/signinwithexternal', { credentialResponse, type: 'GOOGLE' })
-    navigate('/ntodo')
-  }
-
+  const handleGoogleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse: TokenResponse) => {
+      await externalAuthService.googleSignIn(tokenResponse)
+      navigate('/ntodo')
+    },
+    onError: (errorResponse) => console.log(errorResponse)
+  })
   return (
     <div className={cn('flex flex-col gap-6 min-h-screen items-center justify-center px-4', className)} {...props}>
       <Card className='overflow-hidden p-0'>
@@ -93,7 +94,7 @@ export function SignInForm({ className, ...props }: React.ComponentProps<'div'>)
               <FieldSeparator className='*:data-[slot=field-separator-content]:bg-card'>
                 Or continue with
               </FieldSeparator>
-              {/* <div className='flex flex-col gap-3'>
+              <div className='flex flex-col gap-3'>
                 <Button
                   variant={isSecondaryTheme ? 'outlineSecondary' : 'outline'}
                   type='button'
@@ -106,10 +107,10 @@ export function SignInForm({ className, ...props }: React.ComponentProps<'div'>)
                       fill='currentColor'
                     />
                   </svg>
-                  Login with Google
+                  Sign in with Google
                 </Button>
               </div>
-              <div className='flex flex-col gap-3'>
+              {/*<div className='flex flex-col gap-3'>
                 <Button
                   variant={isSecondaryTheme ? 'outlineSecondary' : 'outline'}
                   type='button'
@@ -124,8 +125,9 @@ export function SignInForm({ className, ...props }: React.ComponentProps<'div'>)
                   Login with Apple
                 </Button>
               </div> */}
-              <div className='flex flex-col gap-3'>
+              {/* <div className='flex flex-col gap-3 mx-auto'>
                 <GoogleLogin
+                  size='large'
                   text='signin_with'
                   onSuccess={(credentialResponse) => {
                     handleGoogleSignIn(credentialResponse)
@@ -134,7 +136,7 @@ export function SignInForm({ className, ...props }: React.ComponentProps<'div'>)
                     console.log('Login Failed')
                   }}
                 />
-              </div>
+              </div> */}
               <div className='text-xs text-balance px-6 text-center *:[a]:hover:text-primary text-muted-foreground *:[a]:underline *:[a]:underline-offetset-4'>
                 Still not have an account yet?{' '}
                 <a href='/signup' className='underline underline-offset-4'>

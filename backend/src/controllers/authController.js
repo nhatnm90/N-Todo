@@ -79,13 +79,7 @@ const signInWithExternal = async (req, res) => {
     if (!credentialResponse) {
       return res.status(400).json({ message: 'Missing information' })
     }
-    const {
-      email,
-      given_name: firstName,
-      family_name: lastName,
-      name,
-      picture: avatarUrl
-    } = jwt.decode(credentialResponse.credential)
+    const { email, given_name: firstName, family_name: lastName, name, picture: avatarUrl } = credentialResponse
 
     const username = name.trim().toLowerCase().split(' ').join('_')
 
@@ -94,9 +88,9 @@ const signInWithExternal = async (req, res) => {
       // create new user
       exitedUser = await User.create({
         email,
-        type,
+        logInType: type,
         firstName,
-        lastName,
+        lastName: lastName || name || firstName,
         username: `${username}_${new Date().getMilliseconds()}`,
         avatarUrl
       })

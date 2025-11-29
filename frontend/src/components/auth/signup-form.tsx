@@ -9,7 +9,8 @@ import { useForm } from 'react-hook-form'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
 import { useNavigate } from 'react-router'
 import { FieldSeparator } from '@/components/ui/field.tsx'
-import { useGoogleLogin } from '@react-oauth/google'
+import { useGoogleLogin, type TokenResponse } from '@react-oauth/google'
+import { externalAuthService } from '@/services/externalAuthService.ts'
 
 // Define zod schema
 const signUpSchema = z.object({
@@ -43,8 +44,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
   }
 
   const handleGoogleSignIn = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
-    flow: 'auth-code'
+    onSuccess: async (tokenResponse: TokenResponse) => {
+      await externalAuthService.googleSignIn(tokenResponse)
+      navigate('/ntodo')
+    },
+    onError: (errorResponse) => console.log(errorResponse)
   })
 
   return (
@@ -142,7 +146,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                       fill='currentColor'
                     />
                   </svg>
-                  Login with Google
+                  Sign up with Google
                 </Button>
               </div>
               {/* <div className='flex flex-col gap-3'>
