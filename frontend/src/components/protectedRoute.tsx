@@ -52,7 +52,7 @@ const ProtectedRoute = () => {
   }, [accessToken])
 
   if (isStarting || isLoading) {
-    return <div>Đợi xíu</div>
+    return <div className='flex flex-col items-center justify-center'>loading ...</div>
   }
 
   console.log(`Protected Route: ${accessToken}`)
