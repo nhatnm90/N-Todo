@@ -39,6 +39,7 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   try {
+    // return res.status(401).json({ message: 'tèo rồi' })
     const { username, password } = req.body
     if (!username || !password) {
       return res.status(400).json({ message: 'Missing information' })

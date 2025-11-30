@@ -25,28 +25,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   signIn: async (username, password) => {
-    try {
-      set({ isLoading: true })
-      const { accessToken } = await authService.signIn(username, password)
-      get().setAccessToken(accessToken)
-
+    set({ isLoading: true })
+    const res = await authService.signIn(username, password)
+    if (!res.success || !res.data?.accessToken) {
+      toast.error('Sign in unsuccessfully. Please check the credential and try again')
+    } else {
+      const accessToken = res.data?.accessToken
+      accessToken && get().setAccessToken(accessToken)
       await get().fetchMe()
       toast.success('Sign in successfully')
-    } catch (error) {
-      console.error('Error when sign in: ', error)
-      toast.error('Sign in unsuccessfully. Please check the credential and try again')
-    } finally {
       set({ isLoading: false })
     }
   },
   signOut: async () => {
-    try {
-      await authService.signOut()
+    const res = await authService.signOut()
+    if (res.success) {
       toast.success('Sign out successfully')
-    } catch (error) {
-      console.error('Error when sign out: ', error)
-      toast.error('Sign out unsuccessfully. Please try again')
-    } finally {
       get().clearState()
     }
   },
@@ -54,25 +48,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ accessToken: null, user: null, isLoading: false })
   },
   fetchMe: async () => {
-    try {
-      set({ isLoading: true })
-      const user = await authService.fetchMe()
-      set({ user })
-    } catch (error) {
-      console.error('Error when fetch user: ', error)
-    } finally {
-      set({ isLoading: false })
+    set({ isLoading: true })
+    const res = await authService.fetchMe()
+    if (res.success) {
+      set({ user: res.data })
     }
+    set({ isLoading: false })
   },
   refresh: async () => {
-    try {
-      set({ isLoading: true })
-      const accessToken = await authService.refresh()
-      get().setAccessToken(accessToken)
-    } catch (error) {
-      console.error('Error when refresh token')
-    } finally {
-      set({ isLoading: false })
+    set({ isLoading: true })
+    const { user, setAccessToken, fetchMe } = get()
+    const res = await authService.refresh()
+    if (!res.success || !res.data?.accessToken) {
+      console.error('Fail to refresh token')
+      return
     }
+    console.info('SET ACCESS WHEN REFRESH')
+    setAccessToken(res.data.accessToken)
+    !user && (await fetchMe())
+
+    set({ isLoading: false })
   }
 }))

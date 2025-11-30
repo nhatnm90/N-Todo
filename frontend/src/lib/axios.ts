@@ -67,17 +67,18 @@ const rejectPromise = async (error: AxiosError) => {
   const errorCode = error.response?.status
 
   switch (errorCode) {
-    case 401:
-      toast.warning('Session is expired, please help to sign in.')
-      break
+    // case 401:
+    //   toast.warning('Session is expired, please help to sign in.')
+    //   break
     case 403:
       retryMap.set(originalRequest, currentCount + 1)
       try {
-        const newAccessToken = await authService.refresh()
-        if (originalRequest?.headers && newAccessToken) {
+        const res = await authService.refresh()
+        if (originalRequest?.headers && res.success && res.data.accessToken) {
           const { setAccessToken } = useAuthStore.getState()
-          setAccessToken(newAccessToken)
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          const accessToken = res.data.accessToken
+          setAccessToken(accessToken)
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`
           return api(originalRequest)
         }
       } catch (refreshError) {

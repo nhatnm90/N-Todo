@@ -4,7 +4,7 @@ import type { Task } from '@/types/task.ts'
 
 type TasksProps = {
   filter: string
-  taskBuffer: Task[]
+  taskBuffer?: Task[]
   fetchTask: () => void
 }
 

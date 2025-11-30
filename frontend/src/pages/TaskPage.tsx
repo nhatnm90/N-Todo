@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '@/components/tasks/Header.tsx'
 import AddTask from '@/components/tasks/AddTask.tsx'
 import Footer from '@/components/tasks/Footer.tsx'
@@ -9,29 +9,27 @@ import Tasks from '@/components/tasks/Tasks.tsx'
 import { toast } from 'sonner'
 import { PAGE_SIZE } from '@/lib/const.ts'
 import { taskService } from '@/services/taskService.ts'
-import SignOut from '@/components/auth/signout.tsx'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
-import UserSection from '@/components/auth/user-section.tsx'
+import type { Task } from '@/types/task.ts'
 
 const TaskPage = () => {
   const { user } = useAuthStore.getState()
   const [filter, setFilter] = useState('all')
-  const [taskBuffer, setTaskBuffer] = useState([])
+  const [taskBuffer, setTaskBuffer] = useState<Task[]>([])
   const [activeTask, setActiveTask] = useState(0)
   const [completedTask, setCompletedTask] = useState(0)
   const [dateQuery, setDateQuery] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
 
   const fetchTasks = async () => {
-    try {
-      if (!user) return
-      const res = await taskService.getTasks(dateQuery, user._id)
-      setTaskBuffer(res.tasks)
-      setActiveTask(res.activeTask)
-      setCompletedTask(res.completedTask)
-    } catch (err) {
-      console.error('Error when fetching tasks: ', err)
+    if (!user) return
+    const res = await taskService.getTasks(dateQuery, user._id)
+    if (!res.success) {
       toast.error('Error when fetching tasks')
+    } else {
+      setTaskBuffer(res.data.tasks)
+      setActiveTask(res.data.activeTask)
+      setCompletedTask(res.data.completedTask)
     }
   }
 
@@ -53,8 +51,9 @@ const TaskPage = () => {
       }
     })
 
-  const visibleTasks =
-    filterTasks && filter.length > 0 && filterTasks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  let visibleTasks: Task[] = []
+  if (filterTasks && filter.length > 0)
+    visibleTasks = filterTasks.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   const totalPages = filterTasks && filter.length > 0 ? Math.ceil(filterTasks.length / PAGE_SIZE) : 0
 

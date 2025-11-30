@@ -1,55 +1,40 @@
 import api from '@/lib/axios.ts'
+import { handleApi } from '@/lib/handleApi.ts'
+import type { SignInResponse } from '@/types/auth.ts'
+import type { User } from '@/types/user.ts'
 
-const signUp = async (username: string, password: string, email: string, firstName: string, lastName: string) => {
-  try {
+const signUp = (username: string, password: string, email: string, firstName: string, lastName: string) =>
+  handleApi<SignInResponse>(async () => {
     const res = await api.post(
       '/auth/signup',
       { username, password, email, firstName, lastName },
       { withCredentials: true }
     )
     return res.data
-  } catch (error) {
-    console.error(error)
-  }
-}
+  })
 
-const signIn = async (username: string, password: string) => {
-  try {
+const signIn = (username: string, password: string) =>
+  handleApi<SignInResponse>(async () => {
     const res = await api.post('/auth/signin', { username, password }, { withCredentials: true })
-    if (res.status === 200) {
-      return res.data
-    } else {
-      console.error('Error when return data: ', res.data)
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
+    return res.data
+  })
 
-const signOut = async () => {
-  try {
-    await api.post('/auth/signout', null, { withCredentials: true })
-  } catch (error) {
-    console.error('Error when signout')
-  }
-}
+const signOut = () =>
+  handleApi<SignInResponse>(async () => {
+    const res = await api.post('/auth/signout', null, { withCredentials: true })
+    return res.data
+  })
 
-const fetchMe = async () => {
-  try {
+const fetchMe = () =>
+  handleApi<User>(async () => {
     const res = await api.get('/user/me', { withCredentials: true })
-    return res?.data?.user
-  } catch (error) {
-    console.error('Error when get user: ', error)
-  }
-}
+    return res?.data.user
+  })
 
-const refresh = async () => {
-  try {
+const refresh = () =>
+  handleApi<SignInResponse>(async () => {
     const res = await api.post('/auth/refreshtoken', { withCredentials: true })
-    return res.data?.accessToken
-  } catch (error) {
-    console.error('Error when generate new token')
-  }
-}
+    return res?.data as unknown as SignInResponse
+  })
 
 export const authService = { signUp, signIn, signOut, fetchMe, refresh }

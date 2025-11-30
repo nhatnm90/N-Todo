@@ -4,18 +4,14 @@ import React, { use, useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router'
 
 const ProtectedRoute = () => {
-  const { isLoading, accessToken, user, refresh, fetchMe } = useAuthStore()
+  const { accessToken, refresh } = useAuthStore()
   const [isStarting, setIsStarting] = useState(true)
 
   const init = async () => {
     if (!accessToken) {
-      console.log('Chuẩn bị lấy accessToken mới')
+      // console.log('Chuẩn bị lấy accessToken mới')
       await refresh()
-      console.log('Đã lấy accessToken mới')
-    }
-
-    if (accessToken && !user) {
-      await fetchMe()
+      // console.log('Đã lấy accessToken mới')
     }
   }
 
@@ -24,7 +20,7 @@ const ProtectedRoute = () => {
     setIsStarting(false)
   }, [])
 
-  if (isStarting || isLoading) {
+  if (isStarting || useAuthStore.getState().isLoading) {
     return (
       <div className='flex flex-col items-center justify-center min-h-screen text-center bg-slate-50'>
         <div className='flex h-full flex-col justify-center items-center space-y-5'>
