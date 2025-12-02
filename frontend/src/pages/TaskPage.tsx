@@ -7,7 +7,7 @@ import Paging from '@/components/tasks/Paging.tsx'
 import StatisticFilter from '@/components/tasks/StatisticAndFilter.tsx'
 import Tasks from '@/components/tasks/Tasks.tsx'
 import { toast } from 'sonner'
-import { PAGE_SIZE } from '@/lib/const.ts'
+import { DateFilterType, PAGE_SIZE } from '@/lib/const.ts'
 import { taskService } from '@/services/taskService.ts'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
 import type { Task } from '@/types/task.ts'
@@ -18,7 +18,7 @@ const TaskPage = () => {
   const [taskBuffer, setTaskBuffer] = useState<Task[]>([])
   const [activeTask, setActiveTask] = useState(0)
   const [completedTask, setCompletedTask] = useState(0)
-  const [dateQuery, setDateQuery] = useState('all')
+  const [dateQuery, setDateQuery] = useState('today')
   const [currentPage, setCurrentPage] = useState(1)
 
   const fetchTasks = async () => {

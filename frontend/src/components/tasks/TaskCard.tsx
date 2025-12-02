@@ -27,24 +27,21 @@ const TaskCard = ({ index, task, fetchTask }: TaskCardProps) => {
       isCompleted === null || isCompleted === undefined
         ? { title: inputTitle }
         : { status: isCompleted ? 'completed' : 'active', completedAt: isCompleted ? new Date().toISOString() : null }
-    try {
-      await taskService.updateTask(task._id, payload)
+    const res = await taskService.updateTask(task._id, payload)
+    if (!res.success) {
+      toast.error('Updated error. Please contact admin')
+    } else {
       setIsEditing(false)
       toast.success('This task was updated successfully')
       fetchTask()
-    } catch (error) {
-      console.log(error)
     }
   }
 
   const deleteTask = async (taskId: string) => {
-    try {
-      await taskService.deleteTask(taskId)
-      toast.success('Task deleted')
-      fetchTask()
-    } catch (error) {
-      console.log(error)
-    }
+    const res = await taskService.deleteTask(taskId)
+    if (!res.success) toast.error('Delete error. Please contact admin')
+    else toast.success('Task deleted')
+    fetchTask()
   }
 
   useEffect(() => {

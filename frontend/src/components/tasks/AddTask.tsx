@@ -20,17 +20,16 @@ const AddTask = ({ fetchTask }: AddTaskProps) => {
   const [inputTitle, setInputTitle] = useState('')
 
   const addTask = async () => {
-    try {
-      if (!user) return
-      const taskPayload: TaskPayload = { title: inputTitle, userId: user._id }
-      await taskService.addTask(taskPayload)
+    if (!user) return
+    const taskPayload: TaskPayload = { title: inputTitle, userId: user._id }
+    const res = await taskService.addTask(taskPayload)
+    if (!res.success) {
+      toast.error('Add task error. Please contact admin')
+    } else {
       toast.success('Task added')
       fetchTask()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setInputTitle('')
     }
+    setInputTitle('')
   }
 
   const handleAddTask = () => {

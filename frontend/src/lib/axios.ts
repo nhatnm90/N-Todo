@@ -32,8 +32,8 @@ api.interceptors.request.use((config) => {
 })
 
 const resolvePromise = (res: AxiosResponse<any>) => {
-  console.info('Response ok nha: ', res)
-  return Promise.resolve(res)
+  // console.info('Response ok nha: ', res)
+  return Promise.resolve(res.data)
 }
 
 /*Tạo biến để lưu lại retryCount

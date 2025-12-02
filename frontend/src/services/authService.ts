@@ -4,37 +4,37 @@ import type { SignInResponse } from '@/types/auth.ts'
 import type { User } from '@/types/user.ts'
 
 const signUp = (username: string, password: string, email: string, firstName: string, lastName: string) =>
-  handleApi<SignInResponse>(async () => {
-    const res = await api.post(
+  handleApi(async () => {
+    const res = await api.post<any, SignInResponse>(
       '/auth/signup',
       { username, password, email, firstName, lastName },
       { withCredentials: true }
     )
-    return res.data
+    return res
   })
 
 const signIn = (username: string, password: string) =>
-  handleApi<SignInResponse>(async () => {
-    const res = await api.post('/auth/signin', { username, password }, { withCredentials: true })
-    return res.data
+  handleApi(async () => {
+    const res = await api.post<any, SignInResponse>('/auth/signin', { username, password }, { withCredentials: true })
+    return res
   })
 
 const signOut = () =>
-  handleApi<SignInResponse>(async () => {
-    const res = await api.post('/auth/signout', null, { withCredentials: true })
-    return res.data
+  handleApi(async () => {
+    const res = await api.post<any, SignInResponse>('/auth/signout', null, { withCredentials: true })
+    return res
   })
 
 const fetchMe = () =>
-  handleApi<User>(async () => {
-    const res = await api.get('/user/me', { withCredentials: true })
-    return res?.data.user
+  handleApi(async () => {
+    const res = await api.get<any, { user: User }>('/user/me', { withCredentials: true })
+    return res.user
   })
 
 const refresh = () =>
-  handleApi<SignInResponse>(async () => {
-    const res = await api.post('/auth/refreshtoken', { withCredentials: true })
-    return res?.data as unknown as SignInResponse
+  handleApi(async () => {
+    const res = await api.post<any, SignInResponse>('/auth/refreshtoken', { withCredentials: true })
+    return res
   })
 
 export const authService = { signUp, signIn, signOut, fetchMe, refresh }

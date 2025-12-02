@@ -1,5 +1,6 @@
 import api from '@/lib/axios.ts'
 import { useAuthStore } from '@/stores/useAuthStore.ts'
+import type { SignInResponse } from '@/types/auth.ts'
 import type { TokenResponse } from '@react-oauth/google'
 import axios from 'axios'
 import { toast } from 'sonner'
@@ -12,14 +13,12 @@ const googleSignIn = async (tokenResponse: TokenResponse) => {
 
     const { data: credentialResponse } = userInfo
 
-    const res = await api.post('/auth/signinwithexternal', {
+    const res = await api.post<any, SignInResponse>('/auth/signinwithexternal', {
       credentialResponse,
       type: 'GOOGLE'
     })
 
-    const {
-      data: { accessToken }
-    } = res
+    const { accessToken } = res
 
     if (accessToken) {
       useAuthStore.getState().setAccessToken(accessToken)

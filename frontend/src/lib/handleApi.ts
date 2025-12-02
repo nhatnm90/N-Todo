@@ -1,7 +1,8 @@
-// src/lib/api-helper.ts
 import { AxiosError } from 'axios'
 import type { ServiceResponse } from '@/types/serviceResponse.ts'
 
+// HandleAPI là 1 wrapper để trả về 1 promise luôn có type là ServiceResponse { success: boolean, data: <T>, ...props }
+// trong ServiceResponse sẽ có data là type generate của service tương ứng
 export const handleApi = async <T>(apiCall: () => Promise<T>): Promise<ServiceResponse<T>> => {
   try {
     const data = await apiCall()
