@@ -3,6 +3,9 @@ import { signIn, signUp, signOut, refreshToken, signInWithExternal } from '../co
 
 const router = express.Router()
 
+router.get('/test', (req, res) => {
+  return res.status(200).json({ message: 'OK nha' })
+})
 router.post('/signup', signUp)
 router.post('/signin', signIn)
 router.post('/signout', signOut)
