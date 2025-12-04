@@ -20,9 +20,9 @@ app.use(express.json())
 app.use(cookieParser())
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({ origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_1], credentials: true }))
+  app.use(cors({ origin: [process.env.CLIENT_URL_LOCAL], credentials: true }))
 } else {
-  app.use(cors({ origin: [process.env.CLIENT_URL_NETLIFY], credentials: true }))
+  app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
 }
 
 // public routes
@@ -33,22 +33,22 @@ app.use('/api/tasks', protectRoute, taskRoute)
 // app.use(protectRoute)
 app.use('/api/user', protectRoute, userRoute)
 
-if (process.env.NODE_ENV === 'production') {
-  /*
-  tạo biến lưu đường dẫn tuyệt đối đến thư mục hiện tại trên server
-  - middleware 1: lấy code front end trong thư mục dist của front end
-  yêu cầu express lấy file để trả về cho người dùng khi truy cập
+// if (process.env.NODE_ENV === 'production') {
+//   /*
+//   tạo biến lưu đường dẫn tuyệt đối đến thư mục hiện tại trên server
+//   - middleware 1: lấy code front end trong thư mục dist của front end
+//   yêu cầu express lấy file để trả về cho người dùng khi truy cập
 
-  - middleware 2: gửi về trang index.html với bất kì url nào mà người dùng gõ vào trình duyệt
+//   - middleware 2: gửi về trang index.html với bất kì url nào mà người dùng gõ vào trình duyệt
 
-  2 middle ware này chỉ chạy trên env production
-  */
-  app.use(express.static(path.join(__dirname, '../frontend/dist')))
+//   2 middle ware này chỉ chạy trên env production
+//   */
+//   app.use(express.static(path.join(__dirname, '../frontend/dist')))
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
-  })
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
+//   })
+// }
 
 connectDB().then(
   app.listen(process.env.PORT, () => {
