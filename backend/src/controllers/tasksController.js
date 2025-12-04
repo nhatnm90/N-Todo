@@ -93,7 +93,7 @@ const deleteTask = async (req, res) => {
     if (!deletedTask) {
       res.status(404).json({ message: `The taskId ${req.params.id} is not existed` })
     }
-    res.status(200).json(deletedTask)
+    res.status(200).json({ message: 'Task deleted' })
   } catch (error) {
     console.error('Error when deleting the task', error)
     res.status(500).json({ message: 'System error' })
